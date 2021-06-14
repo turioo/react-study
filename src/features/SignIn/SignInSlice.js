@@ -1,21 +1,32 @@
-import { createSlice } from '@reduxjs/toolkit'
+import {createSlice} from '@reduxjs/toolkit'
+import axios from 'axios';
+import {$apiClient} from "../../utils/request";
 
-export const signInSlice = createSlice({
-    name: 'song',
+export const SignInSlice = createSlice({
+    name: 'SignIn',
     initialState: {
-        value: [],
+        value: {},
     },
     reducers: {
-        addSong: (state, action) => {
-            state.value.push(action.payload)
-        },
-        removeSong: (state, action) => {
-            state.value.pop()
+        setToken: (state, action) => {
+          state.value =  action.payload
+          localStorage.setItem('access_token', action.payload.access_token);
         },
     },
 })
 
-// Action creators are generated for each case reducer function
-export const { addSong, removeSong } = signInSlice.actions
+export const SignInFunction = (email, password) =>  dispatch => {
+    axios.post(`http://127.0.0.1:8000/api/v1/auth/login`, {
+        email:email,
+        password:password
+    }, $apiClient)
+        .then(res => {
 
-export default signInSlice.reducer
+            dispatch(setToken(res.data.data))
+        })
+        .catch((error) => console.log(error.message))
+}
+
+export const {setToken} = SignInSlice.actions
+export const selectToken = state => state.SignIn.value;
+export default SignInSlice.reducer

@@ -1,33 +1,33 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { addSong, removeSong } from './songSlice'
+import { useDispatch } from 'react-redux'
+import {SignInFunction} from './SignInSlice'
+import './SignIn.scss'
+import { useHistory } from "react-router-dom";
 
-export function Song() {
-    const count = useSelector((state) => state.addsong.value)
+export function SignIn() {
     const dispatch = useDispatch()
+    const email = React.useRef()
+    const password = React.useRef()
+    const history = useHistory()
 
-    const song = React.useRef()
-
+    const sendRequest = () => {
+        const data = {
+            email:email.current.value,
+            password:password.current.value
+        }
+        dispatch(SignInFunction(data.email, data.password))
+        history.push('/dashboard')
+    }
     return (
-        <div>
-            <div>
-                <input type="text" ref={song} />
-                <button
-                    aria-label="Increment value"
-                    onClick={() => dispatch(addSong(song.current.value))}
-                >
-                    Add
-                </button>
-                <button
-                    aria-label="Increment value"
-                    onClick={() => dispatch(removeSong())}
-                >
-                    remove
-                </button>
-                <div>
-                    {count.map( el => <div>{el}</div>)}
-                </div>
-            </div>
+        <div className="signin-wrapper">
+            <form>
+                <div className="title">Sign In</div>
+                <input type="text" ref={email} placeholder="Email"/>
+                <input type="password" ref={password} placeholder="Password"/>
+                <button type="button"
+                    onClick={() => sendRequest()}
+                >Sign In</button>
+            </form>
         </div>
     )
 }
