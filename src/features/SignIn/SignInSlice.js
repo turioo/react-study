@@ -21,10 +21,9 @@ export const SignInFunction = (email, password) =>  dispatch => {
         password:password
     }, $apiClient)
         .then(res => {
-
             dispatch(setToken(res.data.data))
         })
-        .catch((error) => console.log(error.message))
+
 }
 
 export const {setToken} = SignInSlice.actions

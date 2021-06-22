@@ -1,29 +1,48 @@
-import React, {useEffect, useState} from 'react';
-import axios from "axios";
-import { useHistory } from "react-router-dom";
-
+import React, {useEffect} from 'react';
+import './Dashboard.scss'
+import Post from "./Post/Post";
+import {useDispatch, useSelector} from 'react-redux'
+import {addPostService, getPostsService} from "../../features/Posts/PostsSlice";
+import {selectPosts} from "../../features/Posts/PostsSlice";
 
 const Dashboard = () => {
-    const [name, setName] = useState('')
-    const history = useHistory()
-    const [token, setToken] = useState(localStorage.getItem('access_token'))
-    const config = {
-        headers: { Authorization: `Bearer ${token}` }
-    };
-    useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/api/v1/auth/me?`, config )
-            .then(res => {
-                setName(res.data.data.name)
-            })
-    }, [token]);
-    const logOut = () => {
-        localStorage.removeItem('access_token')
-        history.push('/')
-    }
+    const selector = useSelector(selectPosts)
+    const dispatch = useDispatch()
+    useEffect(() =>
+        dispatch(getPostsService()),
+        []
+    )
+    let list = selector.map((el) => <Post
+        id = {el.id}
+        name={el.name}
+        photo={el.user.photo}
+        title={el.title}
+        text={el.text}
+        create={el.created_at}
+        change_id={el.last_change_user}
+        update={el.updated_at}
+    />)
+
+    let title = React.useRef()
+    let text = React.useRef()
     return (
-       <div>
-           <div>name: {name}</div>
-           <button onClick={ () => logOut()}>Log out</button>
+       <div className="dashboard-wrapper">
+           <div className="dashboard-wrapper__background">
+               <div id='dots'></div>
+               <div id='dots2'></div>
+               <div id='dots3'></div>
+           </div>
+           <div className="dashboard-container">
+               <div className="left">
+                   {list}
+               </div>
+               <div className="right">
+                   <div className="title">Add post:</div>
+                   <input type="text" placeholder="Title" ref={title}/>
+                   <textarea placeholder="Text" ref={text}/>
+                   <button onClick={ ()=> dispatch(addPostService(title.current.value, text.current.value))}>Send</button>
+               </div>
+           </div>
        </div>
     );
 }
