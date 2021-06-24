@@ -1,11 +1,21 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import "./Auth.scss"
 import {SignUp} from "../../features/SignUp/SignUp";
 import {SignIn} from "../../features/SignIn/SignIn";
+import {useSelector} from "react-redux";
+import {authcompleted} from "../../features/SignIn/SignInSlice";
+import {useHistory} from "react-router-dom";
 
 const Auth = () => {
     const [handler, setHandler] = useState(true)
-
+    const history = useHistory()
+    const status = useSelector(authcompleted)
+    useEffect(() => {
+          if (status == 1) {
+              history.push('/dashboard')
+          }
+        },
+        [status])
     const styles = {
         signin : {
             display: handler ? "flex" : "none",

@@ -1,22 +1,19 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import {SignInFunction} from './SignInSlice'
+import { SignInService} from './SignInSlice'
 import './SignIn.scss'
-import { useHistory } from "react-router-dom";
 
 export function SignIn() {
     const dispatch = useDispatch()
     const email = React.useRef()
     const password = React.useRef()
-    const history = useHistory()
 
     const sendRequest = () => {
         const data = {
             email:email.current.value,
             password:password.current.value
         }
-        dispatch(SignInFunction(data.email, data.password))
-        history.push('/dashboard')
+        dispatch(SignInService(data.email, data.password))
     }
     return (
         <div className="signin-wrapper">

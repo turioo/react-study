@@ -16,6 +16,21 @@
       color: #FFFFFF;
       margin-bottom: 30px;
     }
+    input.file{
+      display: none;
+    }
+    label {
+      font-family: Raleway;
+      font-style: normal;
+      font-size: 20px;
+      line-height: 25px;
+      font-weight: 500;
+      background: #BC181E;
+      padding: 10px 50px;
+      color: #FFFFFF;
+      margin-top: 20px;
+      cursor: pointer;
+    }
     input {
       width: 100%;
       height: 72px;

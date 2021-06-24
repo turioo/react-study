@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import axios from "axios";
+import {apiClient} from "../../utils/request";
 
 export const PostsSlice = createSlice({
     name: 'Posts',
@@ -11,23 +11,24 @@ export const PostsSlice = createSlice({
          state.value = action.payload
         },
         addPost:(state, action) => {
-            console.log(action.payload)
             state.value.push(action.payload)
         },
         removePost: (state,action) => {
           state.value = state.value.filter( function (e) {
               return e.id !== action.payload
           })
+        },
+        editPost:(state, action) => {
+           for (let el in state.value) {
+               if (state.value[el].id === action.payload.id) {
+                   state.value[el].text = action.payload.text
+               }
+           }
         }
     },
 })
 export const getPostsService = () => dispatch => {
-    axios.get(`http://127.0.0.1:8000/api/v1/posts`, {
-        headers : {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        }
-    })
-        .then(res => {
+    apiClient.get('/api/v1/posts').then(res => {
             dispatch(getPosts(res.data.data))
         })
 }
@@ -36,26 +37,30 @@ export const addPostService = (title, text) => dispatch =>{
         title:title,
         text:text
     }
-    axios.post(`http://127.0.0.1:8000/api/v1/posts`, data,{
-        headers : {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        }
+    apiClient.post('/api/v1/posts', data).then(res => {
+        dispatch(addPost(res.data.data))
     })
-        .then((res) => {
-            dispatch(addPost(res.data.data))
-        })
 }
 export const removePostService = (id) => dispatch =>{
-    axios.delete(`http://127.0.0.1:8000/api/v1/posts/${id}`, {
-        headers : {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        }
+    apiClient.delete(`/api/v1/posts/${id}`).then(res => {
+        dispatch(removePost(id))
     })
-        .then(() => {
-           dispatch(removePost(id))
-        })
+}
+export const editPostService = (data, id) => dispatch =>{
+    let newData = {
+        title:data.title,
+        text:data.text
+    }
+    let newState = {
+        id:id,
+        title:data.title,
+        text:data.text
+    }
+    apiClient.put(`/api/v1/posts/${data.id}`, newData).then(res => {
+        dispatch(editPost(newState))
+    })
 }
 
-export const { getPosts, removePost, addPost } = PostsSlice.actions
+export const { getPosts, removePost, addPost, editPost } = PostsSlice.actions
 export const selectPosts = state => state.Posts.value;
 export default PostsSlice.reducer

@@ -1,17 +1,36 @@
-import { createSlice } from '@reduxjs/toolkit'
+import {createSlice} from '@reduxjs/toolkit'
+import axios from 'axios';
+import {setAuthAccessToken} from "../../utils/services";
+import {getMeService} from "../Me/Me";
+import {apiClient} from "../../utils/request";
 
 export const SignUpSlice = createSlice({
-    name: 'SignUp',
+    name: 'SignIn',
     initialState: {
-        value: [],
+        value: {},
+        flag:0
     },
     reducers: {
-        SignUpFunc: (state, action) => {
-            state.value.push(action.payload)
+        setToken: (state, action) => {
+            state.value =  action.payload
         },
+        authDone: (state) => {
+            state.flag = 1
+        }
     },
 })
 
-export const { SignUpFunc } = SignUpSlice.actions
+export const SignUpService = (data) =>  dispatch => {
 
+    apiClient.post(`api/v1/auth/register?`, data)
+        .then(res => {
+            console.log(res)
+            // dispatch(setToken(res.data.data))
+            // setAuthAccessToken(res.data.data.access_token)
+            // dispatch(authDone())
+            // dispatch(getMeService())
+        })
+
+}
+export const {setToken, authDone} = SignUpSlice.actions
 export default SignUpSlice.reducer
