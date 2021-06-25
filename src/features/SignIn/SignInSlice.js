@@ -1,5 +1,4 @@
 import {createSlice} from '@reduxjs/toolkit'
-import axios from 'axios';
 import {setAuthAccessToken} from "../../utils/services";
 import {getMeService} from "../Me/Me";
 import {apiClient} from "../../utils/request";

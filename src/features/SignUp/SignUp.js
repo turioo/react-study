@@ -1,7 +1,7 @@
 import React, {useRef} from 'react'
 import { useDispatch } from 'react-redux'
-import {SignUpFunc, SignUpService} from './SignUpSlice'
 import './SignUp.scss'
+import {SignUpService} from "../SignIn/SignInSlice";
 
 export function SignUp() {
     const dispatch = useDispatch()
