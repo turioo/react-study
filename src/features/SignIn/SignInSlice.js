@@ -2,6 +2,7 @@ import {createSlice} from '@reduxjs/toolkit'
 import axios from 'axios';
 import {setAuthAccessToken} from "../../utils/services";
 import {getMeService} from "../Me/Me";
+import {apiClient} from "../../utils/request";
 
 export const SignInSlice = createSlice({
     name: 'SignIn',
@@ -24,8 +25,20 @@ export const SignInService = (email, password) =>  dispatch => {
         email:email,
         password:password
     }
-    axios.post(`http://127.0.0.1:8000/api/v1/auth/login`, data)
+    apiClient.post(`api/v1/auth/login`, data)
         .then(res => {
+            dispatch(setToken(res.data.data))
+            setAuthAccessToken(res.data.data.access_token)
+            dispatch(authDone())
+            dispatch(getMeService())
+        })
+
+}
+export const SignUpService = (data) =>  dispatch => {
+
+    apiClient.post(`api/v1/auth/register?`, data)
+        .then(res => {
+            console.log(res)
             dispatch(setToken(res.data.data))
             setAuthAccessToken(res.data.data.access_token)
             dispatch(authDone())
