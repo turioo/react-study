@@ -23,6 +23,7 @@ const Dashboard = () => {
         title={el.title}
         text={el.text}
         create={el.created_at}
+        user_id={el.user.id}
         change_id={el.last_change_user}
         update={el.updated_at}
     />)

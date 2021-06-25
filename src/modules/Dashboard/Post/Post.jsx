@@ -2,16 +2,14 @@ import React, {useEffect, useState} from 'react';
 import './Post.scss'
 import {ReactComponent as Cancel} from '../../../assets/img/close.svg'
 import {ReactComponent as Edit} from '../../../assets/img/pen.svg'
-import {useDispatch} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
 import {editPostService, getPostsService, removePostService} from "../../../features/Posts/PostsSlice";
+import {selectMe} from "../../../features/Me/Me";
 
 const Post = (props) => {
     const dispatch = useDispatch()
+    const profile = useSelector(selectMe)
     const [edit, setEdit] = useState(false)
-    useEffect(() =>
-            dispatch(getPostsService()),
-        []
-    )
     const styles = {
         changed: {
             display:'flex'
@@ -41,7 +39,7 @@ const Post = (props) => {
                             <div className="photo"><img src={props.photo} /></div>
                             <div className="name">{props.name}</div>
                         </div>
-                        <div className="right-side">
+                        <div className="right-side" style={ props.user_id == profile.id || profile.status == 2 ?  styles.changed : styles.nochanged }>
                             <div className="change" onClick={()=>setEdit(!edit)}>
                                 <Edit />
                             </div>
